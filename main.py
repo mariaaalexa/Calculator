@@ -6,7 +6,7 @@ def handle_button_click (clicked_button_text):
 
     if clicked_button_text == "=":
         try:
-            expression - current_text.replace("÷", "/").replace("x", "*")
+            expression = current_text.replace("÷", "/").replace("×", "*")
             result = eval(expression)
 
             if result.is_integer():
@@ -37,7 +37,7 @@ def handle_button_click (clicked_button_text):
         result_var.set(current_text + clicked_button_text)
             
 root = tk.Tk() #de aici o sa porneasca toate obiectele ca niste ramuri
-root.title("Calculator")
+root.title("Calculator")    
 
 result_var = tk.StringVar()
 #cream un text box de o linie pe care o putem edita
@@ -52,4 +52,34 @@ buttons = [
     ("0", 5, 0, 2), (".", 5, 2), ("=", 5, 3)
 ]
 
-root.mainloop()
+#configurarea stilului temei
+style=ttk.Style()
+style.theme_use('default')
+style.configure("TButton", font=("Helvetica", 16), width=10, height=4)
+
+#crearea butoanelor si adaugarea lor pe grid
+for button_info in buttons:
+    button_text, row, col = button_info[:3]
+    colspan= button_info[3] if len (button_info) > 3 else 1
+    button = ttk.Button(root, text = button_text, command=lambda text=button_text: handle_button_click(text), style="TButton")
+    button.grid(row=row, column=col, columnspan=colspan, sticky="nsew", ipadx=10, ipady=4, padx=5, pady=5)
+
+#le dam acelasi weight ca sa se extinda la fel de mult odata cu window ul
+for i in range (6):
+    root.grid_rowconfigure(i, weight=1)
+for i in range (4):
+    root.grid_columnconfigure(i, weight=1)
+
+#set the window size
+width = 500
+height = 700
+root.geometry(f"{width}x{height}")
+
+#make the window not resizable
+# root.resizable(False, False)
+
+#keyboard control
+root.bind("<Return>", lambda event:  handle_button_click("="))
+root.bind("<BackSpace>", lambda event:  handle_button_click("C"))
+
+root.mainloop() 
